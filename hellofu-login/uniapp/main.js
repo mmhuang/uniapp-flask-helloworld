@@ -3,6 +3,7 @@ import App from './App'
 // #ifndef VUE3
 import Vue from 'vue'
 Vue.config.productionTip = false
+Vue.prototype.$baseUrl = 'http://localhost:5000/api'
 App.mpType = 'app'
 
 try {
@@ -31,22 +32,33 @@ try {
 	  });
 	},
 	});
-	uni.interceptors.request.use((config) => {
-	  const token = uni.getStorageSync('access_token')
-	  if (token) {
-		config.header.Authorization = token
-	  }
-	  return config
-	});
-
-	uni.interceptors.response.use((response) => {
-	  if (response.statusCode === 401) {
-		uni.navigateTo({
-		  url: '/pages/login/login.vue'
-		})
-	  }
-	  return response
-	});
+	uni.addInterceptor({"request":{
+		invoke: function(args) {
+			const token = uni.getStorageSync('access_token')
+			args.url=`{uni.$baseurl}/{args.url}`
+			if (token) {
+				if(!args.header) args.header = {}
+				args.header.Authorization = `Bearer ${token}`
+			}
+			return args
+		},
+		success: function(res) {
+			if (res.statusCode === 200) {
+				return res.data
+			}
+		},
+		fail: function(err) {
+			console.log("interceptor-fail",err)
+		},
+		complete: function(res) {
+			console.log("interceptor-complete",res)
+			if (res.statusCode === 401) {
+				uni.navigateTo({
+					url: '/pages/login/login.vue'
+				})
+			}
+		}	
+	}})
 } catch (error) { }
 
 

@@ -24,7 +24,7 @@ export default {
       // 如果请求成功，将访问令牌保存到本地存储中，并跳转到ProfilePage页面
 	  console.log("login bt")
       uni.request({
-        url: 'http://localhost:5000/api/auth',
+        url: '/auth',
         method: 'POST',
         data: {
           username: this.username,

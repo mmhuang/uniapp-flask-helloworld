@@ -30,7 +30,7 @@ export default {
         return
       }
       uni.request({
-        url: 'http://localhost:5000/api/me',
+        url: '/me',
         method: 'GET',
         header: {
           Authorization: `Bearer ${token}`
@@ -49,7 +49,7 @@ export default {
       uni.removeStorageSync('access_token')
       uni.removeStorageSync('user')
       uni.navigateTo({
-        url: '/pages/HomePage.vue'
+        url: '/pages/index/index'
       })
     }
   }
